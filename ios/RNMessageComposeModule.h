@@ -9,7 +9,7 @@
 #import <MessageUI/MessageUI.h>
 #import <UIKit/UIKit.h>
 
-@interface RNMessageComposeModule : NSObject <RCTBridgeModule>
+@interface RNMessageComposeModule : NSObject <RCTBridgeModule, MFMessageComposeViewControllerDelegate>
 
 @end
   

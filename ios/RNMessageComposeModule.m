@@ -18,6 +18,19 @@ RCT_EXPORT_MODULE()
     return root;
 }
 
+RCT_REMAP_METHOD(canSendText,
+                 findEventsWithResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if ([MFMessageComposeViewController canSendText]) {
+        NSDictionary *response = @{@"status":@YES};
+        resolve(response);
+    } else {
+        NSError *error = nil;
+        reject(@"messaging_is_not_available", @"Text messaging is not available", error);
+    }
+}
+
 RCT_EXPORT_METHOD(show:(NSString *)body)
 {
     if (![MFMessageComposeViewController canSendText]) {
@@ -36,7 +49,7 @@ RCT_EXPORT_METHOD(show:(NSString *)body)
     } else {
         //RCTLogInfo(@"Show compose element %@ at %@");
         MFMessageComposeViewController* composeVC = [[MFMessageComposeViewController alloc] init];
-        //composeVC.messageComposeDelegate = [self getRootVC].delegate;
+        composeVC.messageComposeDelegate = self;
 
         // Configure the fields of the interface.
         //composeVC.recipients = @[@"14085551212"];
@@ -45,6 +58,13 @@ RCT_EXPORT_METHOD(show:(NSString *)body)
         // Present the view controller modally.
         [[self getRootVC] presentViewController:composeVC animated:YES completion:nil];
     }
+}
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
+                 didFinishWithResult:(MessageComposeResult)result {
+    // Check the result or perform other tasks.    // Dismiss the message compose view controller.
+    [[self getRootVC] dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 @end
