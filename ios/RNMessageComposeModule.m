@@ -66,21 +66,21 @@ RCT_EXPORT_METHOD(show:(NSString *)body)
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
-    NSString *result;
-    switch(result) {
-        case MessageComposeResultCancelled:
-            result = @"canceled";
-        break;
-        case MessageComposeResultSent:
-            result = @"sent";
-        break;
-        case MessageComposeResultFailed:
-            result = @"failed";
-        break;
-    }
-    [self sendEventWithName:@"messageComposeDidFinishWithResult" body:@{@"result": result}];
-    // Check the result or perform other tasks.    // Dismiss the message compose view controller.
-    [[self getRootVC] dismissViewControllerAnimated:YES completion:nil];
+       NSString *stringResult;
+       switch(result) {
+           case MessageComposeResultCancelled:
+               stringResult = @"canceled";
+           break;
+           case MessageComposeResultSent:
+               stringResult = @"sent";
+           break;
+           case MessageComposeResultFailed:
+               stringResult = @"failed";
+           break;
+       }
+       [self sendEventWithName:@"messageComposeDidFinishWithResult" body:@{@"result": stringResult}];
+       // Check the result or perform other tasks.    // Dismiss the message compose view controller.
+       [[self getRootVC] dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
