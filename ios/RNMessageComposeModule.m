@@ -3,6 +3,11 @@
 
 @implementation RNMessageComposeModule
 
+
+- (NSArray<NSString *> *)supportedEvents {
+    return @[@"messageComposeDidFinishWithResult"];
+}
+
 - (dispatch_queue_t)methodQueue
 {
     return dispatch_get_main_queue();
@@ -60,11 +65,22 @@ RCT_EXPORT_METHOD(show:(NSString *)body)
     }
 }
 
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller
-                 didFinishWithResult:(MessageComposeResult)result {
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    NSString *result;
+    switch(result) {
+        case MessageComposeResultCancelled:
+            result = @"canceled";
+        break;
+        case MessageComposeResultSent:
+            result = @"sent";
+        break;
+        case MessageComposeResultFailed:
+            result = @"failed";
+        break;
+    }
+    [self sendEventWithName:@"messageComposeDidFinishWithResult" body:@{@"result": result}];
     // Check the result or perform other tasks.    // Dismiss the message compose view controller.
     [[self getRootVC] dismissViewControllerAnimated:YES completion:nil];
-    
 }
 
 @end
